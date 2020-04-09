@@ -13,7 +13,7 @@ nv.interactiveGuideline = function() {
         ,   width = null
         ,   height = null
         ,   xScale = d3.scale.linear()
-        ,   dispatch = d3.dispatch('elementMousemove', 'elementMouseout', 'elementClick', 'elementDblclick', 'elementMouseDown', 'elementMouseUp')
+        ,   dispatch = d3.dispatch('elementMousemove', 'elementMouseout', 'elementClick', 'elementDblclick', 'elementMouseDown', 'elementMouseUp', 'elementTouchMove')
         ,   showGuideLine = true
         ,   svgContainer = null // Must pass the chart's svg, we'll use its mousemove event.
         ,   tooltip = nv.models.tooltip()
@@ -42,6 +42,12 @@ nv.interactiveGuideline = function() {
             function mouseHandler() {
                 var mouseX = d3.event.clientX - this.getBoundingClientRect().left;
                 var mouseY = d3.event.clientY - this.getBoundingClientRect().top;
+
+                // need calculate mouseX and mouseY positions seperately for touchmove.
+                if(d3.event.type === 'touchmove'){
+                    var mouseX = d3.event.changedTouches[0].clientX - this.getBoundingClientRect().left;
+                    var mouseY = d3.event.changedTouches[0].clientY - this.getBoundingClientRect().top;
+                }
 
                 var subtractMargin = true;
                 var mouseOutAnyReason = false;
@@ -175,6 +181,17 @@ nv.interactiveGuideline = function() {
                 		mouseY: mouseY,
                 		pointXValue: pointXValue
                 	});
+                }
+
+                // if user presses scrolls in mobile, fire elementTouchMove
+                if (d3.event.type === 'touchmove') {
+                    dispatch.elementTouchMove({
+                		mouseX: mouseX,
+                		mouseY: mouseY,
+                		pointXValue: pointXValue
+                    });
+                    tooltip.hidden(true);
+                    return;
                 }
             }
 

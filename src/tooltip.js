@@ -132,8 +132,8 @@ nv.models.tooltip = function() {
      */
     var position = function() {
         var pos = {
-            left: d3.event !== null ? d3.event.clientX : 0,
-            top: d3.event !== null ? d3.event.clientY : 0
+            left: d3.event !== null ? d3.event.clientX || d3.event.changedTouches[0].clientX : 0,
+            top: d3.event !== null ? d3.event.clientY || d3.event.changedTouches[0].clientY : 0
         };
 
         if(getComputedStyle(document.body).transform != 'none') {
