@@ -176,6 +176,12 @@ nv.interactiveGuideline = function() {
                 		pointXValue: pointXValue
                 	});
                 }
+
+                // if user scrolls in mobile, hide tooltip
+                if (d3.event.type === 'touchmove') {
+                    tooltip.hidden(true);
+                    return;
+                }
             }
 
             svgContainer
